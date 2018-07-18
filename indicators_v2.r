@@ -170,11 +170,12 @@ lcm <- function(x, y) {
   return(lcm)
 }
 
-
 create_mixture <- function(varieties, num_var, ssr_data, name_mix){
-  # function that creates ssr data for mixtures
-  # num_var : number of individuals for each variety
-  
+  ### function that creates ssr data for mixtures
+        # varieties : vector of varieties to mix
+        # num_var : number of individuals for each variety
+        # name_mix : name of the mixture
+        
   if(name_mix %in% ssr_data$variety){stop("This mixture name is already in ssr_data")}
   
   temp_ssr <- ssr_data[ssr_data$variety %in% varieties,]
@@ -213,6 +214,8 @@ create_mixture <- function(varieties, num_var, ssr_data, name_mix){
   return(ssr)
 }
 
+
+
 # 0.2. get data ----------
 repartition_data <- read.csv2("./script_indicateurs/surfaces_varietes/surface_variete_1981_2017_vf.csv",header=T,sep=";")
 str(repartition_data)
@@ -223,18 +226,21 @@ ssr_data <- get(load("microsatellite_reformatted_all.RData"))
 str(ssr_data)
 
 # 1.0. create scenarios ---------
+
+mix1 = create_mixture(c("SOISSONS","ALTIGO","OVALO"),c(1,1,1),ssr_data,name_mix="MIX1")
+ssr_data <- rbind(ssr_data,mix1)
 # Create automaticaly the matrix with the proportion of varieties
 which_varieties <- list(
                       "1" = as.character(repartition_data[repartition_data$departement %in% "ain" & repartition_data$annee %in% 2006,"variete"]),
-                      "2" = c("SOISSONS","ALTIGO","OVALO","ROCALOEX","ROUGEDUROC"),
-                      "3" = c("SOISSONS","ALTIGO","OVALO","ROCALOEX","INCONNUDERAPHAEL","AARON"),
+                      "2" = c("MIX1","ROCALOEX","ROUGEDUROC"),
+                      "3" = c("SOISSONS","ALTIGO","OVALO","ROCALOEX","ROUGEDUROC"),
                       "4" = c("SOISSONS","ALTIGO","OVALO","ROCALOEX","DAUPHIBOIS")
                     )
 
 proportions <- list(
-                  "1" =matrix(repartition_data[repartition_data$departement %in% "ain" & repartition_data$annee %in% 2006,"repartition_pct"],ncol=1),
-                  "2" = cbind(c(10,10,5,25,50),c(50,5,0,20,25),c(5,30,45,10,10)),
-                  "3" = cbind(c(5,30,15,10,5,5),c(10,10,5,25,25,25),c(50,5,0,20,10,15)),
+                  "1" = matrix(as.numeric(as.character(repartition_data[repartition_data$departement %in% "ain" & repartition_data$annee %in% 2006,"repartition_pct"],ncol=1))),
+                  "2" = cbind(c(15,35,50),c(30,40,30),c(90,5,5)),
+                  "3" = cbind(c(5,5,5,35,50),c(10,10,10,40,30),c(30,30,30,5,5)),
                   "4" = matrix(c(0,50,47,2,1),ncol=1)
                 )
 
