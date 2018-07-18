@@ -1,0 +1,71 @@
+Le projet contient 2 scripts :
+- SSR_to_matrix : permet de transformer le fichier de résultats SSR en fichier exploitable pour le calcul des indicateurs de diversité
+- indicators_v2 : crée les scénatios et calcule les indicateurs de diversité
+
+
+------------------------------------------------------------------------------------------------------------------
+INDICATORS_V2
+------------------------------------------------------------------------------------------------------------------
+
+Fonctions :
+
+- lcm  ------------------------------
+Permet de calculer le plus petit multiple commun à deux nombres
+
+- create_mixture ------------------------------
+Crée le fichier ssr avec la composition du mélange.
+
+--> terminée ? (à valider avec Rémi)
+
+Arguments d'entrée : 
+- vecteur avec le nom des variétés
+- vecteur avec la proportion de chacune des variétés dans le mélange
+- les données ssr
+- le nom du nouveau mélange
+
+/!\ Si une ou plusieurs composantes ont plusieurs individus dans le fichier ssr, il faut que le nombre d'individus au final 
+pour chacune des variétés respecte les proportions indiquées en entrée tout en ne perdant pas d'infos de diversité intra-variétale.
+
+- create_scenarios ------------------------------
+Crée la liste avec les scénarios
+
+--> à faire
+
+Questions :
+- fonctions vraiment utile ou bien préférable de créer les scénarios sur un fichier excel ?
+- si on part d'un assolement existant c'est plus simple de créer le scénario sur R, par contre si on invente un assolement de nul part c'est plus simple sur excel
+--> donner la possibilité de faire les 2 ? 
+- comment automatiser la création des scénarios ? Si ce ne sont que des cas particuliers ...
+
+------------------------------------------------------------------------------------------------------------------
+Scénarios
+------------------------------------------------------------------------------------------------------------------
+
+1. A partir d'un assolement existant, remplacer des variétés pures par des mélanges de variétés :
+si on met dans le mélange les variétés que l'on remplace ça ne changera pas les indicateurs.
+
+A tester : remplacer les variétés dominantes ou des variétés prises aléatoirement par
+- des mélanges de variétés prises aléatoirement dans les variétés présentes dans le département
+- des mélanges des variétés dominantes
+- des mélanges des variétés les moins communes
+
+
+2. A partir d'un assolement existant, remplacer des variétés pures par des landraces et des lignées anciennes :
+tester sur des départements contrastés en terme de diversité d'assolement au départ.
+A tester : 
+- remplacer aléatoirement
+- remplacer les variétés dominantes
+- remplacer les variétés les moins communes
+
+3. A partir d'un assolement existant, remplacer des variétés pures par des variétés paysannes :
+tester sur des départements contrastés en terme de diversité d'assolement au départ.
+A tester : 
+- remplacer aléatoirement
+- remplacer les variétés dominantes
+- remplacer les variétés les moins communes
+
+
+
+
+
+
