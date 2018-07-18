@@ -4,6 +4,50 @@ Le projet contient 2 scripts :
 
 
 ------------------------------------------------------------------------------------------------------------------
+Elements à discuter
+------------------------------------------------------------------------------------------------------------------
+Choix méthodologiques :
+- l'imputation des données manquantes pour les microsatellites (à rediscuter selon les scénarios testés)
+- l'estimation de coefficients de variabilité intravariétale (dénominateur HT*)
+- le calcul des coefficients de pondération de la variabilité intravariétale (%L...) : calcul à l'échelle de chaque microsat ?
+
+Etude systématique du comportement des indicateurs :
+tester l'effet d'une évolution du nombre de variétés, des répartitions des variétés, du type de variété, des allèles des variétés, du caractère
+homozygote/hétérozygote, de la variabilité inter-individuelle et du nombre de microsatellites sur les indicateurs
+--> il y a donc un certain nombre de combinaisons possible à faire évoluer par pas de temps, même en ne testant pas toutes les combinaisons
+
+
+------------------------------------------------------------------------------------------------------------------
+Scénarios
+------------------------------------------------------------------------------------------------------------------
+
+1. A partir d'un assolement existant, remplacer des variétés pures par des mélanges de variétés :
+si on met dans le mélange les variétés que l'on remplace ça ne changera pas les indicateurs.
+
+A tester : remplacer les variétés dominantes ou des variétés prises aléatoirement par
+- des mélanges de variétés prises aléatoirement dans les variétés présentes dans le département
+- des mélanges des variétés dominantes
+- des mélanges des variétés les moins communes
+
+
+2. A partir d'un assolement existant, remplacer des variétés pures par des landraces et des lignées anciennes :
+tester sur des départements contrastés en terme de diversité d'assolement au départ.
+A tester : 
+- remplacer aléatoirement
+- remplacer les variétés dominantes
+- remplacer les variétés les moins communes
+
+3. A partir d'un assolement existant, remplacer des variétés pures par des variétés paysannes :
+tester sur des départements contrastés en terme de diversité d'assolement au départ.
+A tester : 
+- remplacer aléatoirement
+- remplacer les variétés dominantes
+- remplacer les variétés les moins communes
+
+
+
+
+------------------------------------------------------------------------------------------------------------------
 INDICATORS_V2
 ------------------------------------------------------------------------------------------------------------------
 
@@ -37,32 +81,6 @@ Questions :
 --> donner la possibilité de faire les 2 ? 
 - comment automatiser la création des scénarios ? Si ce ne sont que des cas particuliers ...
 
-------------------------------------------------------------------------------------------------------------------
-Scénarios
-------------------------------------------------------------------------------------------------------------------
-
-1. A partir d'un assolement existant, remplacer des variétés pures par des mélanges de variétés :
-si on met dans le mélange les variétés que l'on remplace ça ne changera pas les indicateurs.
-
-A tester : remplacer les variétés dominantes ou des variétés prises aléatoirement par
-- des mélanges de variétés prises aléatoirement dans les variétés présentes dans le département
-- des mélanges des variétés dominantes
-- des mélanges des variétés les moins communes
-
-
-2. A partir d'un assolement existant, remplacer des variétés pures par des landraces et des lignées anciennes :
-tester sur des départements contrastés en terme de diversité d'assolement au départ.
-A tester : 
-- remplacer aléatoirement
-- remplacer les variétés dominantes
-- remplacer les variétés les moins communes
-
-3. A partir d'un assolement existant, remplacer des variétés pures par des variétés paysannes :
-tester sur des départements contrastés en terme de diversité d'assolement au départ.
-A tester : 
-- remplacer aléatoirement
-- remplacer les variétés dominantes
-- remplacer les variétés les moins communes
 
 
 
