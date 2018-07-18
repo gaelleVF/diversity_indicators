@@ -185,12 +185,18 @@ create_mixture <- function(varieties, num_var, ssr_data, name_mix){
   nb_ind <- unique(temp_ssr[,c("variety","individual")])
   nb_ind <- as.matrix(by(nb_ind$individual,list(nb_ind$variety),max))
   nb_ind[,1] <- as.numeric(as.character(nb_ind[,1]))
-
-  LCM=1
-  for (i in 1:nrow(nb_ind)){
-    LCM = lcm(LCM,nb_ind[i])
+  
+  if(length(unique(nb_ind[,1])) > 1){
+    LCM=1
+    for (i in 1:nrow(nb_ind)){
+      LCM = lcm(LCM,nb_ind[i])
+    }
+    nb_ind <- LCM/nb_ind[,1]
+  }else{
+    nb_ind <- nb_ind[,1]
   }
-  nb_ind <- LCM/nb_ind[,1]
+
+  
   nb_microsat <- length(unique(temp_ssr$locus))
     
   ssr <- NULL
@@ -210,6 +216,7 @@ create_mixture <- function(varieties, num_var, ssr_data, name_mix){
   ssr$variety <- name_mix
   ssr$individual <- ssr[,ncol(ssr)]
   ssr <- ssr[,-ncol(ssr)]
+  ssr$allelic_weighing_coefficient <- 1/(2*max(ssr$individual))
   
   return(ssr)
 }
