@@ -152,19 +152,65 @@ get_indicators <- function(variety_data, ssr_data){
 
 create_scenar <- function(departement){}
 
-create_mixture <- function(varieties, num_var, ssr_data){
+lcm <- function(x, y) {
+  # find the least common multiple of 2 numbers
+  # choose the greater number
+  if(x > y) {
+    greater = x
+  } else {
+    greater = y
+  }
+  while(TRUE) {
+    if((greater %% x == 0) && (greater %% y == 0)) {
+      lcm = greater
+      break
+    }
+    greater = greater + 1
+  }
+  return(lcm)
+}
+
+
+create_mixture <- function(varieties, num_var, ssr_data, name_mix){
   # function that creates ssr data for mixtures
   # num_var : number of individuals for each variety
   
+  if(name_mix %in% ssr_data$variety){stop("This mixture name is already in ssr_data")}
+  
   temp_ssr <- ssr_data[ssr_data$variety %in% varieties,]
+  temp_ssr <- droplevels(temp_ssr)
+  
+  # if one of the component of the mixture already has several individuals in ssr_data, multiply the number for the other components
+  nb_ind <- unique(temp_ssr[,c("variety","individual")])
+  nb_ind <- as.matrix(by(nb_ind$individual,list(nb_ind$variety),max))
+  nb_ind[,1] <- as.numeric(as.character(nb_ind[,1]))
+
+  LCM=1
+  for (i in 1:nrow(nb_ind)){
+    LCM = lcm(LCM,nb_ind[i])
+  }
+  nb_ind <- LCM/nb_ind[,1]
+  nb_microsat <- length(unique(temp_ssr$locus))
+    
   ssr <- NULL
+  comp=1
   for (i in 1:length(varieties)){
     v = varieties[i]
     ssr_v <- temp_ssr[temp_ssr$variety %in% v,]
-    ssr <- rbind(ssr, cbind(rep(ssr_v,num_var[i]),rep(seq(1,num_var[i],1),each=nrow(ssr_v))))
+    ssr_v <- ssr_v[order(ssr_v$individual,ssr_v$locus),]
+    if(nrow(ssr_v)>0){
+      ssr <- rbind(ssr, cbind(ssr_v[rep(1:nrow(ssr_v),times=num_var[i]*nb_ind[v]),],rep(seq(comp,comp+num_var[i]*nb_ind[v]*max(ssr_v$individual)-1,1),each=nb_microsat)))
+      comp <- comp + num_var[i]*nb_ind[v]*max(ssr_v$individual)
+    }else{
+      warning(paste("No ssr data for ", v,sep=""))
+    }
   }
   
+  ssr$variety <- name_mix
+  ssr$individual <- ssr[,ncol(ssr)]
+  ssr <- ssr[,-ncol(ssr)]
   
+  return(ssr)
 }
 
 # 0.2. get data ----------
