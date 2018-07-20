@@ -1,4 +1,4 @@
-setwd("/home/deap/Documents/Gaelle/Selection_Participative/Ecoagri/BILAN_PROJET_E442_DEAP")
+setwd("D:/these/adaptation/BILAN_PROJET_E442_DEAP")
 
 
 ### packages & sources
@@ -150,7 +150,33 @@ get_indicators <- function(variety_data, ssr_data){
   return(values_indicators)
 }
 
-create_scenar <- function(departement){}
+create_scenar <- function(rep_data, ssr_data, departement, year, type_scenar, type_var, prop){
+  ## Fonction créant les scénarios
+  # rep_data = données de répartition des variétés dans les départements
+  # departement = departement depuis lequel on veut créer le scénario
+  # year = année depuis laquelle on veut créer le scénario
+  # type_scenar = 
+      # "random" = remplace aléatoirement les varietes du paysage
+      # "domin" = remplacer les variétés dominantes (top 5 ?)
+      # "mino" = remplacer les variétés minoritaires
+  # type_var = "OL","L","PV"
+  # prop = proportion de remplacement. Vector dont la longueur est égal au nombre d'années d'évolution du scénario
+  
+
+  d = rep_data[rep_data$departement %in% departement & rep_data$annee %in% year,]
+  variete = unique(d$variete)
+  # vérif proportion de variétés manquantes au ssr
+  
+  
+  
+  
+  # si type_var == "mélange", créer des mélanges à partir des variétés dominantes ? Des mélanges à combien ? 
+  # Faire par exemple 2-3 mélanges différents et les tirer aléatoirement
+  # donner une année de départ et puis remplacer les variétés d'année en année dans les variétés existantes
+  
+  # choix des départements = ceux contrastés pour lesquels on a des données pour beaucoup de variétés
+  
+}
 
 lcm <- function(x, y) {
   # find the least common multiple of 2 numbers
@@ -236,6 +262,7 @@ str(ssr_data)
 
 mix1 = create_mixture(c("SOISSONS","ALTIGO","OVALO"),c(1,1,1),ssr_data,name_mix="MIX1")
 ssr_data <- rbind(ssr_data,mix1)
+
 # Create automaticaly the matrix with the proportion of varieties
 which_varieties <- list(
                       "1" = as.character(repartition_data[repartition_data$departement %in% "ain" & repartition_data$annee %in% 2006,"variete"]),
@@ -278,7 +305,7 @@ scenarios <- lapply(1:length(which_varieties), function(i){
 } )
     
 
-# 2.0. Calsulate indicators ----
+# 2.0. Calculate indicators ----
 indicators <- lapply(scenarios,function(x) get_indicators(x, ssr_data))
 
 
@@ -295,9 +322,6 @@ save(OUT, file="./resultats/OUT_indicators.RData")
 ### export indicator values
 #write.table(values_indicators,"values_indicators.csv", sep=";", row.names=TRUE, col.names=TRUE)
 
-
-## Pour crÃ©er des mÃ©langes, donner les variÃ©tÃ©s de base du mÃ©lange sous forme de liste
-# Est-ce que Ã§a a un sens ? par construction le mÃ©lange sera juste un mÃ©lange de variÃ©tÃ©s Ã  l'Ã©chelle du paysage...
 
 
 ### literature references
