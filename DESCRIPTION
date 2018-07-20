@@ -21,6 +21,11 @@ homozygote/hétérozygote, de la variabilité inter-individuelle et du nombre de
 Scénarios
 ------------------------------------------------------------------------------------------------------------------
 
+Trucs à checker :
+- dans le choix des départements, ne pas utiliser ceux pour lesquels beaucoup de variétés n'ont pas été génotypées
+- ne pas faire les calculs d'indicateurs s'il on a moins de 15 marqueurs avec des infos
+
+
 1. A partir d'un assolement existant, remplacer des variétés pures par des mélanges de variétés :
 si on met dans le mélange les variétés que l'on remplace ça ne changera pas les indicateurs.
 
