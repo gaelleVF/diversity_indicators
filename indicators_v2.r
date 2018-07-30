@@ -1,4 +1,4 @@
-setwd("D:/these/adaptation/BILAN_PROJET_E442_DEAP")
+setwd("/home/deap/Documents/Gaelle/Selection_Participative/Ecoagri/BILAN_PROJET_E442_DEAP")
 
 
 ### packages & sources
@@ -150,31 +150,41 @@ get_indicators <- function(variety_data, ssr_data){
   return(values_indicators)
 }
 
-create_scenar <- function(rep_data, ssr_data, departement, year, type_scenar, type_var, prop){
-  ## Fonction créant les scénarios
-  # rep_data = données de répartition des variétés dans les départements
-  # departement = departement depuis lequel on veut créer le scénario
-  # year = année depuis laquelle on veut créer le scénario
-  # type_scenar = 
-      # "random" = remplace aléatoirement les varietes du paysage
-      # "domin" = remplacer les variétés dominantes (top 5 ?)
-      # "mino" = remplacer les variétés minoritaires
-  # type_var = "OL","L","PV"
-  # prop = proportion de remplacement. Vector dont la longueur est égal au nombre d'années d'évolution du scénario
-  
 
-  d = rep_data[rep_data$departement %in% departement & rep_data$annee %in% year,]
+# CrÃ©er les mÃ©langes en amont, comme Ã§a si on veut crÃ©er des mÃ©langes spÃ©cifiques c'est possible
+create_scenar <- function(rep_data, ssr_data, departement, annee, type_scenar, type_var, prop){
+  ## Fonction creant les scenarios
+  # rep_data = donnees de repartition des varietes dans les departements
+  # departement = departement depuis lequel on veut creer le scenario
+  # annee = vecteur avec les annÃ©es sur lesquelles on veut crÃ©er le scÃ©nario
+  # type_scenar = 
+      # "proportion" = remplacer les variÃ©tÃ©s proportionnellement Ã  leur frÃ©quence dans le paysage
+      # "random" = remplace aleatoirement les varietes du paysage sans prendre en compte les frequences
+      # "domin" = remplacer les varietes dominantes (replacement en fonction de la frÃ©quence de la variÃ©tÃ©)
+      # "rare" = remplacer les varietes minoritaires
+  # type_var = "MIX","OL","L","PV"
+  # prop = proportion de remplacement. Vector dont la longueur est egal au nombre d'annees d'evolution du scenario
+  
+  
+  
+  # A verifier pour les scÃ©narios : 
+  # - qu'on a pas trop de donnÃ©es manquantes --> fixer un seuil + sortir les surfaces pour lesquelles on n'a pas d'infos et les ssr manquants
+  # - qu'on a de l'info pour assez de ssr --> fixer un seuil (15 ?)
+  
+  d = rep_data[rep_data$departement %in% departement & rep_data$annee %in% annee,]
   variete = unique(d$variete)
-  # vérif proportion de variétés manquantes au ssr
   
   
   
   
-  # si type_var == "mélange", créer des mélanges à partir des variétés dominantes ? Des mélanges à combien ? 
-  # Faire par exemple 2-3 mélanges différents et les tirer aléatoirement
-  # donner une année de départ et puis remplacer les variétés d'année en année dans les variétés existantes
+  # verif proportion de varietes manquantes au ssr
   
-  # choix des départements = ceux contrastés pour lesquels on a des données pour beaucoup de variétés
+  
+  # si type_var == "m?lange", cr?er des m?langes ? partir des vari?t?s dominantes ? Des m?langes ? combien ? 
+  # Faire par exemple 2-3 m?langes diff?rents et les tirer al?atoirement
+  # donner une ann?e de d?part et puis remplacer les vari?t?s d'ann?e en ann?e dans les vari?t?s existantes
+  
+  # choix des d?partements = ceux contrast?s pour lesquels on a des donn?es pour beaucoup de vari?t?s
   
 }
 
