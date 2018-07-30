@@ -43,9 +43,9 @@ format_data <- function(ssr, list_mkr, save="microsatellite_markers_reformated.c
   
   
   M <- melt(ssr, measure.vars = list_mkr)
-  M <- M[,grep("Variete|individu|TYPE|variable|value",colnames(M))]
-  colnames(M)[grep("TYPE",colnames(M))] = "type"
-  colnames(M)[grep("Variete",colnames(M))] = "variety"
+  M <- M[,grep("Variete|individu|TYPE|Type|variable|value",colnames(M))]
+  colnames(M)[grep("TYPE|Type",colnames(M))] = "type"
+  colnames(M)[grep("Variete",colnames(M),fixed=TRUE)] = "variety"
   colnames(M)[grep("individu",colnames(M))] = "individual"
   colnames(M)[grep("variable",colnames(M))] = "locus"
   colnames(M)[grep("value",colnames(M))] = "allele_value"
@@ -65,17 +65,18 @@ format_data <- function(ssr, list_mkr, save="microsatellite_markers_reformated.c
   #m$allelic_weighing_coefficient <- unlist(lapply(m$variety, function(x){1/(2*as.numeric(num_ind[x,2]))}))
   #m$allelic_weighing_coefficient <- unlist(lapply(m$variety, function(x){1/(2*as.numeric(as.character(num_ind[x,2])))}))
   
-  # Prendre en compte les NA dans le calcul du coef de pondération, du coup le faire marqueur par marqueur
+  # prendre en compte les NA dans le calcul du coefficient de ponderation par marqueur
   coef <- NULL
   for (i in 1:nrow(m)){
-    b <- m[grep(m[i,"variety"],m$variety),]
+    print(i)
+    #b <- m[grep(m[i,"variety"],m$variety),]
+    b <- m[grep(paste("^",m[i,"variety"],"$",sep=""),m$variety),]
     b <- b[b$locus %in% m[i,"locus"],]
     b <- b[!is.na(b$allele_value),]
-    if(nrow(b)>0){a <- 1/(2*nrow(b))}else{a=0}
+    if(nrow(b)>0){a <- 1/nrow(b)}else{a=0}
     coef <- c(coef,a)
   }
   m$allelic_weighing_coefficient <- coef
-
   
   
   # m$locus = gsub("a|b","",m$locus)
@@ -85,70 +86,44 @@ format_data <- function(ssr, list_mkr, save="microsatellite_markers_reformated.c
 }
 
 # 1.1. Format data ---------------- 
-ssr <- read.table("06_Resultats_marqueurs_edites.csv",header=T,sep=";")
+ssr <- read.table("06_Resultats_marqueurs_edites_2.csv",header=T,sep=";")
+#ssr <- read.table("./Rémi/v%c3%a9rification_ssr_to_matrix/06_Resultats_marqueurs_edites_RP.csv",header=T,sep=";")
+
 ssr <- ssr[!is.na(ssr$Numero),]  # delete empty rows
-ssr <- ssr[,grep("Numero|Variete|TYPE_VAR|individu|ok|ec",colnames(ssr))]  # keep only edited markers
+ssr <- ssr[,grep("Numero|Variete|TYPE_VAR|Type|individu|ok",colnames(ssr))]  # keep only edited markers
 colnames(ssr) <- unlist(lapply(colnames(ssr), function(x) strsplit(x,"_")[[1]][1]))
 list_mkr <- unique(colnames(ssr)[grep("gwm|Cfd",colnames(ssr))])
-
-# RP: pourquoi ne pas inclure gwm99 dans la liste en mettant -1 sur la derniere lignee
-# ce que tu ne fais pas pour le old dataset
-
-# GVF : en effet c'est une erreur, il y avait avant une colonne "code" en dernière colonne que j'ai du retirer par la suite.
-# je corrige ça
 
 pb_allelic_weighing_coefficient <- format_data(ssr,list_mkr)
 pb_allelic_weighing_coefficient$V2 <- as.numeric(as.character(pb_allelic_weighing_coefficient$V2))
 
+# RP: les deux lignes precedentes ne fonctionnent pas toute seule
+# mais la fonction formar_data fonctionne, donc possible de retirer ces lignes
+
+
 format_data(ssr,list_mkr,save="microsatellite_markers_reformated.csv")
 
-# RP: pourquoi par variete, la somme des donnees disponibles pour chaque microsatellite n'est-elle pas de 1
-# ex. pour JAPHABELLE, tu as 10 individus et potentiellement heterozygotie pour chaque individu
-# donc si tu les individus ont ete genotypees pour le marqueur, tu devrais avoir 0.05 de ponderation
-# dans la colonne allelic weighing coefficient
-# pour les varietes lignees pures cela fonctionne
-# Rem: j'ai trouve le probleme que j'ai modifie (ligne de calcul m$allelic_weighing_coefficient dans la fct format_data)
+# comme indique dans le mail, il y a un probleme avec les noms de varietes inclus dans
+# d'autres noms de varietes (ex. LONA, AMI), j'ai donc ajoute varietyNOMvariety, ce qui evite
+# tout probleme et ne prend pas beaucoup de temps, car malgre differents essais sur les fonctions
+# je n'arrive pas e savoir pour cela ne fonctionne pas dans la version actuelle
+# il y a encore un probleme de doublon FLECHEDOR
 
-# GVF : ok, j'ai passé le strplit au début de la fonction format.data pour n'avoir que le nom de la variété et pas
-# le code du génotypage afin d'avoir bien le même nom de variété pour chaque individu
+# GVF : il faut coller "^" nom de la variété et "$" pour ne conserver que les chaines de caractères qui correspondent exactement.
+# C'est modifié dans la fonction
+# Pourquoi il y a deux variétés qui s'appelent FLECHEDOR ?
 
 
-# RP: par contre, le script suppose, pour les varietes avec plusieurs individus, qu'il n'y a
-# pas de NA ou qu'il y a des NA pour l'ensemble des individus, cependant pour certains marqueurs
-# certains individus ont ete genotypes et d'autres pas. Dans ce cas, il me semble tout de meme
-# important que le allelic_weighing_coefficient somme e 1, donc il faudrait calculer
-# le coefficient par marqueur
-# Rem: le plus rapide est peut-etre de le faire "e la main" sur excel, car nous n'avons pas
-# beaucoup de varietes dans cette situation
-
-# verification donnees brutes
-# RP: j'ai verifie les correspondances entre mon fichier BDD et le tien.
-# Le tien est plus complet car:
-# - je n'ai pas le marqueur gwm415 (pas utilise dans notre etude oe nous avons utilise les memes marqueurs que l'etude de Bonnin)
-# - je n'ai pas un certain nombre de varietes anciennes utilisees dans l'etude de Bonneuil, car je me suis focalise sur 1980-2006
-# Par ailleurs, dans certains cas, il existe des differences (d'un pas) entre les deux fichiers sur gwm120, mais cela est rare
-# et je ne vois pas e quelle etape cette "correction par regroupement a ete realisee
-# enfin certaines varietes n'ont pas la meme nomenclature (parenthese ou tiret lorsque les varietes sont en plusieurs noms, des espaces derriere certains noms)
-# mais elles sont presentes dans les deux fichiers =>
-# Je pense donc qu'il est preferable de se baser sur ton fichier
-# et pour gwm120 de trouver un moyen d'homogeneiser avec les nouvelles donnees, mais le cas se
-# presente aussi pour les autres marqueurs, Harry ayant ete plus precis que les donnees
-# des analyses precedentes
-
-# mise en forme base de donnees
-#ssr_old <- read.table("base_donnees_mol_08_07_08.csv",header=T,sep=";")
-#colnames(ssr_old)[1:4] <- c("code","annee_inscription","TYPE","Variete")
-#list_mkr <- unique(colnames(ssr_old)[5:ncol(ssr_old)])
-#format_data(ssr_old,list_mkr,"old_microsatellite_markers_reformated.csv")
-
-ssr_old <- read.table("base_donnees_mol_08_07_08_RP.csv",header=T,sep=";")
+ssr_old <- read.table("./Rémi/v%c3%a9rification_ssr_to_matrix/base_donnees_mol_08_07_08_RP.csv",header=T,sep=";")
+#ssr_old <- read.table("base_donnees_mol_08_07_08_RP_exempleAMI.csv",header=T,sep=";")
+ssr_old$variete <- gsub("variety","",ssr_old$variete) 
 colnames(ssr_old)[1:4] <- c("Numero","Variete","TYPE","individu")
-list_mkr <- unique(colnames(ssr_old)[5:ncol(ssr_old)])
+list_mkr <- unique(colnames(ssr_old)[grep("gwm|cfd",colnames(ssr_old))])
 format_data(ssr_old,list_mkr,"old_microsatellite_markers_reformated.csv")
 
-# RP: j'avais des erreurs dans la sortie, j'ai donc modifie le fichier d'entree de la fonction format_data
-# pour qu'il soit similaire au precedent fichier 06_Resultats_marqueurs_edites
-# cela marche bien ensuite
+
+# RP: j'ai rebricole la sortie (je ne sais pourquoi il n'y a pas de correspondance entre les deux)
+# lorsque je lance le script (peut-etre as-tu fais des modifs dans base_donnees_mol_08_07_08)e
 
 # 1.2. Merge data
 old <- read.table("old_microsatellite_markers_reformated.csv",header=T,sep=" ")
@@ -158,6 +133,7 @@ new$type = gsub("L","l",new$type)
 new$type = gsub("V","v",new$type)
 
 references = c("SOISSONS","APACHE","SHANGO","VIVANT","ETOILEDECHOISY","APEXAL","PROGRESS","MAGDALENA","LONA","ARCANE","PRINQUAL","FURIO","FLOREAL","VICTO","MAVERICK","NEWTON")
+# PROGRESS ET maverick
 old <- old[!(old$variety %in% references),]
 old <- old[old$locus %in% unique(new$locus),]
 
