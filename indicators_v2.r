@@ -1,6 +1,3 @@
-setwd("/home/deap/Documents/Gaelle/Selection_Participative/Ecoagri/BILAN_PROJET_E442_DEAP")
-
-
 ### packages & sources
 
 ### data
